@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Order #{{ order.id }} - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Order Details</p>
+    <h1>Order #{{ order.id }}</h1>
+    <p class="lead">Order placed on {{ order.created_at|date:"F j, Y" }}</p>
+</section>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 1rem;">
+            <div>
+                <p style="margin: 0; color: #666;">Order Status</p>
+                <h2 style="margin: 0; color: 
+                    {% if order.status == 'pending' %}#ffc107{% endif %}
+                    {% if order.status == 'processing' %}#17a2b8{% endif %}
+                    {% if order.status == 'shipped' %}#007bff{% endif %}
+                    {% if order.status == 'delivered' %}#28a745{% endif %}
+                    {% if order.status == 'cancelled' %}#dc3545{% endif %}
+                    ;">
+                    {{ order.get_status_display }}
+                </h2>
+            </div>
+            <div style="text-align: right;">
+                <p style="margin: 0; color: #666;">Total</p>
+                <h2 style="margin: 0; color: #d86f2a;">Naira {{ order.total_amount }}</h2>
+            </div>
+        </div>
+        
+        <div style="padding: 1rem 0; border-bottom: 2px solid #f0f0f0;">
+            <h3>Order Items</h3>
+            {% for item in order.items.all %}
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+                    <div>
+                        <strong>{{ item.product.name }}</strong>
+                        <span style="color: #666;"> × {{ item.quantity }}</span>
+                    </div>
+                    <span>Naira {{ item.get_subtotal }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div style="padding: 1rem 0; border-bottom: 2px solid #f0f0f0;">
+            <h3>Shipping Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <p style="margin: 5px 0;"><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                    <p style="margin: 5px 0;"><strong>Email:</strong> {{ order.email }}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> {{ order.phone }}</p>
+                </div>
+                <div>
+                    <p style="margin: 5px 0;"><strong>Address:</strong> {{ order.address }}</p>
+                    <p style="margin: 5px 0;"><strong>City:</strong> {{ order.city }}, {{ order.state }}</p>
+                    <p style="margin: 5px 0;"><strong>Country:</strong> {{ order.country }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="padding-top: 1rem; text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            {% if order.status == 'pending' or order.status == 'processing' %}
+                <a href="{% url 'cancel_order' order.id %}" 
+                   style="background: #dc3545; color: white; padding: 10px 25px; border-radius: 999px; text-decoration: none; font-weight: bold;"
+                   onclick="return confirm('Are you sure you want to cancel this order?')">
+                    ❌ Cancel Order
+                </a>
+            {% endif %}
+            <a href="{% url 'order_history' %}" style="background: #6c757d; color: white; padding: 10px 25px; border-radius: 999px; text-decoration: none; font-weight: bold;">Back to Orders</a>
+            <a href="{% url 'product_list' %}" style="background: #d86f2a; color: white; padding: 10px 25px; border-radius: 999px; text-decoration: none; font-weight: bold;">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

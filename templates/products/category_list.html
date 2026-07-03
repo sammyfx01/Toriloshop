@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Categories - Toriloshop
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <p class="eyebrow">Collections</p>
+        <h1>Product Categories</h1>
+        <p class="lead">View category groups and the number of products in each one.</p>
+    </section>
+
+    <section class="card-grid">
+        {% for category in categories %}
+            <article class="card">
+                <h2>{{ category.name }}</h2>
+                <p class="meta">Number of products: {{ category.product_count }}</p>
+                <a class="button" href="{% url 'category_detail' category.name %}">View Category</a>
+            </article>
+        {% empty %}
+            <p>No categories available.</p>
+        {% endfor %}
+    </section>
+{% endblock %}

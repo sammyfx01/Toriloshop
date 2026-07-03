@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero" style="background: #f7efe6; padding: 2rem; border-radius: 10px;">
+    <p class="eyebrow" style="color: #a55323;">Welcome to Toriloshop</p>
+    <h1 style="color: #20160f;">Your Favorite Online Store</h1>
+    <p class="lead" style="color: #5d4634;">Discover amazing products at the best prices.</p>
+</section>
+
+<!-- Categories Section -->
+{% if categories %}
+    <div style="margin: 2rem 0;">
+        <h2 style="color: #20160f;">Shop by Category</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            {% for category in categories %}
+                <a href="{% url 'category_products' category.slug %}" style="text-decoration: none;">
+                    <div style="background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid rgba(110, 74, 46, 0.12);">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+                        {% else %}
+                            <div style="font-size: 2rem;">📁</div>
+                        {% endif %}
+                        <h4 style="margin: 0.5rem 0 0 0; color: #20160f;">{{ category.name }}</h4>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Active Coupons Banner -->
+{% if active_coupons %}
+    <div style="background: linear-gradient(135deg, #d86f2a, #f4a460); color: white; padding: 1.5rem; border-radius: 15px; margin: 2rem 0; text-align: center;">
+        <h3 style="margin: 0;">🎉 Active Coupons</h3>
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+            {% for coupon in active_coupons %}
+                <div style="background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 999px; border: 2px dashed white;">
+                    <strong>{{ coupon.code }}</strong>
+                    {% if coupon.discount_type == 'percentage' %}
+                        - {{ coupon.discount_value }}% OFF
+                    {% else %}
+                        - Naira {{ coupon.discount_value }} OFF
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <p style="margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">Use these codes at checkout to save money!</p>
+    </div>
+{% endif %}
+
+<h2 style="margin: 2rem 0 1rem; color: #20160f;">Featured Products</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 2rem; margin: 2rem 0;">
+    {% for product in products %}
+        <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s; text-align: center; border: 1px solid rgba(110, 74, 46, 0.12);">
+            {% if product.image %}
+                <div style="height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; overflow: hidden; border-radius: 10px;">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            {% else %}
+                <div style="height: 200px; background: #f0f0f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; color: #999;">
+                    No Image
+                </div>
+            {% endif %}
+            
+            <h3 style="margin: 0.5rem 0; font-size: 1.1rem; color: #20160f;">{{ product.name }}</h3>
+            <p style="color: #d86f2a; font-weight: bold; font-size: 1.2rem; margin: 0.5rem 0;">Naira {{ product.price }}</p>
+            
+            {% if product.category %}
+                <p style="color: #666; font-size: 0.9rem; margin: 0;">{{ product.category.name }}</p>
+            {% endif %}
+            
+            {% if product.stock > 0 %}
+                <span style="background: #28a745; color: white; padding: 3px 12px; border-radius: 20px; font-size: 0.8rem;">In Stock</span>
+            {% else %}
+                <span style="background: #dc3545; color: white; padding: 3px 12px; border-radius: 20px; font-size: 0.8rem;">Out of Stock</span>
+            {% endif %}
+            
+            <br><br>
+            <a href="{% url 'product_detail' product.id %}" style="background: #d86f2a; color: white; padding: 10px 25px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block;">View Details</a>
+        </div>
+    {% empty %}
+        <p style="color: #666;">No products available. Please add some products in the admin panel.</p>
+    {% endfor %}
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{% url 'product_list' %}" style="background: #007bff; color: white; padding: 12px 35px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block;">View All Products →</a>
+</div>
+{% endblock %}

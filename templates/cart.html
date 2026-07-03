@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Cart - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Shopping Cart</p>
+    <h1>Your Cart</h1>
+    <p class="lead">Review your items before checkout.</p>
+</section>
+
+{% if cart and cart.items %}
+    <div style="margin: 2rem 0;">
+        {% for item in cart.items %}
+            <div style="display: flex; align-items: center; gap: 20px; padding: 15px; border-bottom: 1px solid #ddd; background: rgba(255,255,255,0.6); border-radius: 10px; margin-bottom: 10px;">
+                <div style="width: 80px; height: 80px; flex-shrink: 0;">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; background: #f0f0f0; border-radius: 5px;"></div>
+                    {% endif %}
+                </div>
+                
+                <div style="flex: 1;">
+                    <h3 style="margin: 0;">{{ item.product.name }}</h3>
+                    <p style="margin: 5px 0; color: #666;">Naira {{ item.product.price }} each</p>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <form action="{% url 'update_cart' item.product.id %}" method="POST" style="display: flex; align-items: center; gap: 8px;">
+                        {% csrf_token %}
+                        <button type="button" onclick="decrement('{{ item.product.id }}')" style="background: #ddd; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;">−</button>
+                        <input type="number" name="quantity" id="qty-{{ item.product.id }}" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" style="width: 60px; text-align: center; padding: 5px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button type="button" onclick="increment('{{ item.product.id }}')" style="background: #ddd; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px;">+</button>
+                        <button type="submit" style="background: #28a745; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">Update</button>
+                    </form>
+                </div>
+                
+                <div style="min-width: 80px; text-align: right;">
+                    <strong>Naira {{ item.subtotal }}</strong>
+                </div>
+                
+                <div>
+                    <a href="{% url 'remove_from_cart' item.product.id %}" style="color: red; text-decoration: none; font-size: 24px;" onclick="return confirm('Remove this item?')">✕</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div style="max-width: 800px; margin: 20px 0 0 auto; text-align: right; padding: 20px; background: rgba(255,255,255,0.8); border-radius: 10px;">
+        <h2 style="margin: 0;">Total: Naira {{ cart.total }}</h2>
+        {% if discount > 0 %}
+            <p style="color: #28a745; margin: 5px 0;">Discount: -Naira {{ discount|floatformat:2 }}</p>
+            <p style="font-size: 1.2rem; font-weight: bold; color: #d86f2a;">Final Total: Naira {{ final_total|floatformat:2 }}</p>
+        {% endif %}
+        <p style="margin: 5px 0 15px; color: #666;">Items: {{ cart.count }}</p>
+        
+        <!-- Available Coupons Section -->
+        {% if available_coupons %}
+            <div style="text-align: left; margin-bottom: 15px; padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba;">
+                <h4 style="margin: 0 0 10px 0;">🎉 Available Coupons</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for coupon in available_coupons %}
+                        <span style="background: #d86f2a; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+                            {{ coupon.code }}
+                        </span>
+                    {% endfor %}
+                </div>
+                <p style="margin: 10px 0 0 0; font-size: 14px; color: #856404;">
+                    💡 Copy a coupon code and paste it below to get a discount!
+                </p>
+            </div>
+        {% endif %}
+        
+        <!-- Coupon Form -->
+        <div style="text-align: left; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <h4 style="margin: 0 0 10px 0;">Have a coupon?</h4>
+            <form method="POST" action="{% url 'apply_coupon' %}" style="display: flex; gap: 10px;">
+                {% csrf_token %}
+                <input type="text" name="coupon_code" placeholder="Enter coupon code" 
+                       style="flex: 1; padding: 10px; border: 2px solid #e0d6cc; border-radius: 5px; font-size: 16px;">
+                <button type="submit" style="background: #d86f2a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    Apply
+                </button>
+            </form>
+            
+            {% if coupon_code %}
+                <div style="margin-top: 10px; background: #d4edda; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>✅ Coupon <strong>{{ coupon_code }}</strong> applied! You saved Naira {{ discount|floatformat:2 }}</span>
+                    <a href="{% url 'remove_coupon' %}" style="color: #dc3545; text-decoration: none; font-weight: bold;">Remove</a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <a href="{% url 'checkout' %}" class="button" style="background: #d86f2a; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold;">Proceed to Checkout</a>
+            <a href="{% url 'clear_cart' %}" style="background: #dc3545; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold;" onclick="return confirm('Clear your cart?')">Clear Cart</a>
+        </div>
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 50px 0;">
+        <p style="font-size: 1.2rem;">Your cart is empty.</p>
+        <a href="{% url 'product_list' %}" class="button" style="display: inline-block; margin-top: 1rem; background: #d86f2a; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold;">Continue Shopping</a>
+    </div>
+{% endif %}
+{% endblock %}
+
+<script>
+function increment(productId) {
+    const input = document.getElementById('qty-' + productId);
+    const max = parseInt(input.getAttribute('max'));
+    let value = parseInt(input.value) + 1;
+    if (value <= max) {
+        input.value = value;
+    }
+}
+
+function decrement(productId) {
+    const input = document.getElementById('qty-' + productId);
+    let value = parseInt(input.value) - 1;
+    if (value >= 1) {
+        input.value = value;
+    }
+}
+</script>

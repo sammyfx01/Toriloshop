@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Checkout</p>
+    <h1>Complete Your Order</h1>
+    <p class="lead">Fill in your details to complete your purchase.</p>
+</section>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1100px; margin: 0 auto;">
+    <!-- Order Summary -->
+    <div>
+        <h2>Order Summary</h2>
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            {% for item in cart.items %}
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <strong>{{ item.product.name }}</strong>
+                        <span style="color: #666;"> × {{ item.quantity }}</span>
+                    </div>
+                    <span>Naira {{ item.subtotal }}</span>
+                </div>
+            {% endfor %}
+            
+            {% if discount > 0 %}
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; color: #28a745;">
+                    <span><strong>Discount ({{ coupon_code }})</strong></span>
+                    <span>- Naira {{ discount|floatformat:2 }}</span>
+                </div>
+            {% endif %}
+            
+            <div style="display: flex; justify-content: space-between; padding-top: 15px; font-size: 1.2rem; font-weight: bold;">
+                <span>Total:</span>
+                <span style="color: #d86f2a;">Naira {{ final_total|floatformat:2 }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shipping Form -->
+    <div>
+        <h2>Shipping Information</h2>
+        <form method="POST" style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            {% csrf_token %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">First Name*</label>
+                    <input type="text" name="first_name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Last Name*</label>
+                    <input type="text" name="last_name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Email*</label>
+                <input type="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Phone*</label>
+                <input type="text" name="phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Address*</label>
+                <textarea name="address" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; min-height: 80px;"></textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">City*</label>
+                    <input type="text" name="city" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">State*</label>
+                    <select name="state" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                        <option value="">Select State</option>
+                        <option value="Lagos">Lagos</option>
+                        <option value="Abuja FCT">Abuja FCT</option>
+                        <option value="Rivers">Rivers</option>
+                        <option value="Oyo">Oyo</option>
+                        <option value="Kano">Kano</option>
+                        <option value="Kaduna">Kaduna</option>
+                        <option value="Enugu">Enugu</option>
+                        <option value="Anambra">Anambra</option>
+                        <option value="Delta">Delta</option>
+                        <option value="Edo">Edo</option>
+                        <option value="Ogun">Ogun</option>
+                        <option value="Osun">Osun</option>
+                        <option value="Kwara">Kwara</option>
+                        <option value="Borno">Borno</option>
+                        <option value="Plateau">Plateau</option>
+                        <option value="Niger">Niger</option>
+                        <option value="Sokoto">Sokoto</option>
+                        <option value="Katsina">Katsina</option>
+                        <option value="Bauchi">Bauchi</option>
+                        <option value="Gombe">Gombe</option>
+                        <option value="Yobe">Yobe</option>
+                        <option value="Zamfara">Zamfara</option>
+                        <option value="Kebbi">Kebbi</option>
+                        <option value="Ebonyi">Ebonyi</option>
+                        <option value="Ekiti">Ekiti</option>
+                        <option value="Nasarawa">Nasarawa</option>
+                        <option value="Benue">Benue</option>
+                        <option value="Akwa Ibom">Akwa Ibom</option>
+                        <option value="Bayelsa">Bayelsa</option>
+                        <option value="Cross River">Cross River</option>
+                        <option value="Imo">Imo</option>
+                        <option value="Abia">Abia</option>
+                        <option value="Taraba">Taraba</option>
+                        <option value="Jigawa">Jigawa</option>
+                        <option value="Adamawa">Adamawa</option>
+                        <option value="Kogi">Kogi</option>
+                        <option value="Ondo">Ondo</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Country*</label>
+                <select name="country" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                    <option value="">Select Country</option>
+                    <option value="Nigeria" selected>Nigeria</option>
+                    <option value="Ghana">Ghana</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Tanzania">Tanzania</option>
+                    <option value="Uganda">Uganda</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Sudan">Sudan</option>
+                    <option value="Rwanda">Rwanda</option>
+                    <option value="Zambia">Zambia</option>
+                    <option value="Zimbabwe">Zimbabwe</option>
+                    <option value="Botswana">Botswana</option>
+                    <option value="Namibia">Namibia</option>
+                    <option value="Ethiopia">Ethiopia</option>
+                    <option value="Cameroon">Cameroon</option>
+                    <option value="Ivory Coast">Ivory Coast</option>
+                    <option value="Senegal">Senegal</option>
+                    <option value="Mali">Mali</option>
+                </select>
+            </div>
+            
+            <button type="submit" style="width: 100%; margin-top: 1.5rem; padding: 14px; background: #28a745; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                Place Order
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ category.name }} - Toriloshop
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <p class="eyebrow">Category</p>
+        <h1>{{ category.name }}</h1>
+        <p class="lead">Products grouped under this category.</p>
+    </section>
+
+    <section class="card-grid">
+        {% for product in products %}
+            <article class="card">
+                <h2>{{ product.name }}</h2>
+                <p class="price">Naira {{ product.price }}</p>
+                <a class="button" href="{% url 'product_detail' product.pk %}">View Details</a>
+            </article>
+        {% empty %}
+            <p>No products available in this category.</p>
+        {% endfor %}
+    </section>
+{% endblock %}

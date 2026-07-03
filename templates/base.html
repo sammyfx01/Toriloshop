@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>
+        {% block title %}
+        Toriloshop
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <header class="site-header" style="background: #20160f; color: #fff7ef; padding: 1.25rem 1.5rem; position: sticky; top: 0; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+        <div class="brand">
+            <a href="{% url 'home' %}" style="color: #fff7ef; text-decoration: none; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Toriloshop</a>
+        </div>
+        
+        <nav style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <a href="{% url 'home' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">Home</a>
+            <a href="{% url 'product_list' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">Products</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'order_history' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">📦 Orders</a>
+            {% endif %}
+            
+            <a href="{% url 'coupons' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">🎫 Coupons</a>
+            
+            <a href="{% url 'cart_detail' %}" style="color: #fff7ef; text-decoration: none; position: relative; padding: 5px 5px;">
+                🛒 Cart
+                {% if cart and cart|length > 0 %}
+                    <span style="background: #ff4444; color: white; border-radius: 50%; padding: 1px 8px; font-size: 12px; margin-left: 3px;">{{ cart|length }}</span>
+                {% endif %}
+            </a>
+            
+            <!-- WhatsApp -->
+            <a href="https://wa.me/2348000000000?text=Hello%20Toriloshop!%20I%20need%20help%20with%20my%20order."
+               target="_blank"
+               style="background: #25D366; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none; font-size: 14px;">
+                💬 WhatsApp
+            </a>
+            
+            <!-- User Dropdown -->
+            {% if user.is_authenticated %}
+                <div style="position: relative; display: inline-block;">
+                    <div onclick="toggleDropdown()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15);">
+                        <span style="background: #d86f2a; color: white; border-radius: 50%; padding: 3px 9px; font-size: 12px; font-weight: bold;">
+                            {{ user.username|first|upper }}
+                        </span>
+                        <span style="font-size: 13px; color: #fff7ef;">{{ user.username }}</span>
+                        <span style="font-size: 10px; color: rgba(255,255,255,0.6);">▼</span>
+                    </div>
+                    <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 40px; background: white; min-width: 160px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); padding: 5px 0; z-index: 1000;">
+                        <a href="{% url 'order_history' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px; transition: background 0.2s;">📦 My Orders</a>
+                        <a href="{% url 'coupons' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px; transition: background 0.2s;">🎫 Coupons</a>
+                        <hr style="margin: 5px 0; border: none; border-top: 1px solid #eee;">
+                        <a href="{% url 'users:logout' %}" style="display: block; padding: 10px 18px; color: #dc3545; text-decoration: none; font-size: 14px; font-weight: bold; transition: background 0.2s;">🚪 Logout</a>
+                    </div>
+                </div>
+                
+                <script>
+                function toggleDropdown() {
+                    var dropdown = document.getElementById('userDropdown');
+                    if (dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    } else {
+                        dropdown.style.display = 'block';
+                    }
+                }
+                
+                document.addEventListener('click', function(event) {
+                    var dropdown = document.getElementById('userDropdown');
+                    var trigger = document.querySelector('[onclick="toggleDropdown()"]');
+                    if (dropdown && trigger && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
+                        dropdown.style.display = 'none';
+                    }
+                });
+                </script>
+            {% else %}
+                <a href="{% url 'users:login' %}" style="background: #007bff; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none;">Login</a>
+                <a href="{% url 'users:register' %}" style="background: #28a745; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none;">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- Flash Messages -->
+    {% if messages %}
+        <div style="position: fixed; top: 80px; right: 20px; z-index: 9999; width: 350px; max-width: 90%;">
+            {% for message in messages %}
+                <div class="alert-message" 
+                     style="padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; 
+                            {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;{% endif %}
+                            {% if message.tags == 'error' %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}
+                            {% if message.tags == 'info' %}background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb;{% endif %}
+                            {% if message.tags == 'warning' %}background: #fff3cd; color: #856404; border: 1px solid #ffeeba;{% endif %}
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert-message');
+            for (var i = 0; i < alerts.length; i++) {
+                alerts[i].style.opacity = '0';
+                alerts[i].style.transition = 'opacity 0.5s';
+                (function(el) {
+                    setTimeout(function() {
+                        if (el && el.parentNode) {
+                            el.parentNode.removeChild(el);
+                        }
+                    }, 500);
+                })(alerts[i]);
+            }
+        }, 5000);
+        </script>
+    {% endif %}
+
+    <main class="page-shell">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer" style="background: #20160f; color: #fff7ef; padding: 1.5rem; text-align: center; margin-top: 4rem;">
+        <p>Toriloshop &copy; 2026</p>
+    </footer>
+    
+</body>
+</html>

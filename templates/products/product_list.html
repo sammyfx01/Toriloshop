@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero" style="background: #f7efe6; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+    <p class="eyebrow" style="color: #a55323;">All Products</p>
+    <h1 style="color: #20160f;">Our Collection</h1>
+    <p class="lead" style="color: #5d4634;">Browse our full catalog of amazing products.</p>
+
+    <form method="GET" action="{% url 'product_list' %}" class="search-form">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search on Toriloshop..."
+            value="{{ query }}"
+            class="search-input"
+        />
+        <button type="submit" class="button">Search</button>
+    </form>
+</section>
+
+<div style="display: flex; gap: 2rem; max-width: 1100px; margin: 0 auto; flex-wrap: wrap;">
+    <!-- Sidebar with categories -->
+    <div style="min-width: 200px; flex: 0 0 200px;">
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid rgba(110, 74, 46, 0.12);">
+            <h3 style="margin-top: 0; color: #20160f;">Categories</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 8px;">
+                    <a href="{% url 'product_list' %}" style="text-decoration: none; {% if not selected_category %}color: #d86f2a; font-weight: bold;{% else %}color: #333;{% endif %}">
+                        All Products
+                    </a>
+                </li>
+                {% for category in categories %}
+                    <li style="margin-bottom: 8px;">
+                        <a href="{% url 'product_list' %}?category={{ category.id }}" style="text-decoration: none; {% if selected_category|add:0 == category.id %}color: #d86f2a; font-weight: bold;{% else %}color: #666;{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Products -->
+    <div style="flex: 1;">
+        <section class="card-grid">
+            {% for product in products %}
+                <article class="card" style="background: white; border: 1px solid rgba(110, 74, 46, 0.12); border-radius: 1.25rem; padding: 1.25rem;">
+                    {% if product.image %}
+                        <div class="product-thumb">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        </div>
+                    {% endif %}
+                    <h2 style="color: #20160f;">{{ product.name }}</h2>
+                    <p class="price" style="color: #d86f2a;">Naira {{ product.price }}</p>
+                    {% if product.category %}
+                        <p class="meta" style="color: #5f4c3f;">Category: {{ product.category.name }}</p>
+                    {% endif %}
+                    <p class="meta" style="color: #5f4c3f;">Stock: {{ product.stock }}</p>
+                    <a href="{% url 'product_detail' product.id %}" class="button" style="background: #d86f2a; color: white; border-radius: 999px; padding: 0.7rem 1rem; text-decoration: none; display: inline-block; margin-top: 1rem;">View Details</a>
+                </article>
+            {% empty %}
+                <p>No products found.</p>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+{% endblock %}

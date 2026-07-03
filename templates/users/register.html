@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Account</p>
+    <h1>Create Account</h1>
+    <p class="lead">Join Toriloshop and start shopping today.</p>
+</section>
+
+<div style="max-width: 450px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 1.2rem;">
+                <label for="{{ field.id_for_label }}" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: #dc3545; font-size: 14px; margin-top: 0.3rem;">
+                        {{ field.errors|join:", " }}
+                    </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <small style="color: #666; font-size: 12px;">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" style="width: 100%; padding: 14px; background: #d86f2a; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+            Create Account
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1.5rem;">
+        Already have an account? <a href="{% url 'users:login' %}" style="color: #d86f2a; font-weight: bold;">Login here</a>
+    </p>
+</div>
+{% endblock %}

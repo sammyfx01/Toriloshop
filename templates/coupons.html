@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Coupons - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Save Money</p>
+    <h1>Available Coupons</h1>
+    <p class="lead">Copy a code and use it at checkout!</p>
+</section>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    {% if active_coupons %}
+        <div style="display: grid; gap: 1.5rem;">
+            {% for coupon in active_coupons %}
+                <div style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; border-left: 5px solid #28a745;">
+                    <div>
+                        <h3 style="margin: 0; color: #d86f2a;">{{ coupon.code }}</h3>
+                        <p style="margin: 5px 0;">
+                            {% if coupon.discount_type == 'percentage' %}
+                                🎯 {{ coupon.discount_value }}% OFF
+                            {% else %}
+                                🎯 Naira {{ coupon.discount_value }} OFF
+                            {% endif %}
+                        </p>
+                        {% if coupon.minimum_order > 0 %}
+                            <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                                Minimum order: Naira {{ coupon.minimum_order }}
+                            </p>
+                        {% endif %}
+                        <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                            Valid until: {{ coupon.valid_to|date:"M j, Y" }}
+                        </p>
+                        <p style="margin: 5px 0; color: #666; font-size: 14px;">
+                            Used: {{ coupon.used_count }} / {{ coupon.usage_limit }} times
+                        </p>
+                    </div>
+                    <div>
+                        <button onclick="copyCode('{{ coupon.code }}')" style="background: #d86f2a; color: white; border: none; padding: 10px 25px; border-radius: 999px; cursor: pointer; font-weight: bold;">
+                            📋 Copy Code
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'cart_detail' %}" style="background: #007bff; color: white; padding: 12px 35px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block;">
+                🛒 Go to Cart
+            </a>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 50px 0; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <p style="font-size: 1.2rem;">No active coupons available.</p>
+            <p style="color: #666;">Check back later for special offers!</p>
+            <a href="{% url 'product_list' %}" style="background: #d86f2a; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 1rem;">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function copyCode(code) {
+    navigator.clipboard.writeText(code).then(function() {
+        alert('✅ Coupon code "' + code + '" copied! Go to cart to apply it.');
+    }).catch(function() {
+        // Fallback for older browsers
+        var input = document.createElement('input');
+        input.value = code;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Coupon code "' + code + '" copied! Go to cart to apply it.');
+    });
+}
+</script>
+{% endblock %}

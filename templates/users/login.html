@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Account</p>
+    <h1>Login</h1>
+    <p class="lead">Sign in to your account to continue shopping.</p>
+</section>
+
+<div style="max-width: 450px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label for="username" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Username</label>
+            <input type="text" name="username" id="username" required 
+                   style="width: 100%; padding: 12px; border: 2px solid #e0d6cc; border-radius: 10px; font-size: 16px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label for="password" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Password</label>
+            <input type="password" name="password" id="password" required 
+                   style="width: 100%; padding: 12px; border: 2px solid #e0d6cc; border-radius: 10px; font-size: 16px; box-sizing: border-box;">
+        </div>
+        
+        <button type="submit" style="width: 100%; padding: 14px; background: #d86f2a; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+            Login
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1.5rem;">
+        Don't have an account? <a href="{% url 'users:register' %}" style="color: #d86f2a; font-weight: bold;">Register here</a>
+    </p>
+</div>
+{% endblock %}

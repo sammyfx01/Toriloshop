@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+   Product Form - Toriloshop
+{% endblock %}
+      {% block content %}  
+
+      <h1>
+        {% if form.instance.pk %}
+          Edit 
+        {% else %}
+          Add New
+        {% endif %}
+        Product
+      </h1>
+
+      <form method="POST" enctype="multipart/form-data" action="">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        <button type="submit">
+          Save Product
+        </button>
+    </form>
+
+    <a href="{% url 'product_list' %}">
+        Cancel
+    </a>
+
+
+      {% endblock %}

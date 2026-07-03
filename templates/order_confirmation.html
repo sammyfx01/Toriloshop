@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmation - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero" style="text-align: center;">
+    <p class="eyebrow">✅ Order Confirmed</p>
+    <h1>Thank You!</h1>
+    <p class="lead">Your order has been placed successfully.</p>
+</section>
+
+<div style="max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);">
+    <div style="text-align: center; padding: 1rem 0;">
+        <h2 style="color: #28a745;">Order #{{ order.id }}</h2>
+        <p style="color: #666;">Order placed on {{ order.created_at|date:"F j, Y" }} at {{ order.created_at|time:"g:i A" }}</p>
+        <p style="color: #666;">Status: <span style="color: #d86f2a; font-weight: bold;">{{ order.get_status_display }}</span></p>
+    </div>
+    
+    <div style="border-top: 2px solid #f0f0f0; padding: 1rem 0;">
+        <h3>Order Items</h3>
+        {% for item in order.items.all %}
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <span>Naira {{ item.get_subtotal }}</span>
+            </div>
+        {% endfor %}
+        <div style="display: flex; justify-content: space-between; padding-top: 15px; font-size: 1.2rem; font-weight: bold;">
+            <span>Total:</span>
+            <span style="color: #d86f2a;">Naira {{ order.total_amount }}</span>
+        </div>
+    </div>
+    
+    <div style="border-top: 2px solid #f0f0f0; padding: 1rem 0;">
+        <h3>Shipping Information</h3>
+        <p><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
+        <p>{{ order.address }}</p>
+        <p>{{ order.city }}, {{ order.state }}</p>
+        <p>{{ order.country }}</p>
+        <p>📧 {{ order.email }}</p>
+        <p>📞 {{ order.phone }}</p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="{% url 'order_history' %}" class="button" style="background: #d86f2a; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block;">View My Orders</a>
+        <a href="{% url 'product_list' %}" class="button" style="background: #6c757d; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold; display: inline-block;">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}

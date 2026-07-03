@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+  Delete Product - Toriloshop
+{% endblock %}
+
+{% block content %}
+    
+        <h2>
+            Delete Product: {{ product.name }}
+        <p>
+            This action cannot be undone.
+            </p> 
+
+        <form method="POST" >
+            {% csrf_token %}
+            <button type="submit">
+                Yes, Delete it
+            </button>
+            <a href="{% url 'product_list' %}
+            Cancel
+            </a>
+        </form>
+   
+{% endblock %}

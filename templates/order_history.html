@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders - Toriloshop{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">My Account</p>
+    <h1>Order History</h1>
+    <p class="lead">View all your past orders.</p>
+</section>
+
+{% if orders %}
+    <div style="max-width: 900px; margin: 0 auto;">
+        {% for order in orders %}
+            <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <h3 style="margin: 0;">Order #{{ order.id }}</h3>
+                        <p style="margin: 5px 0; color: #666;">{{ order.created_at|date:"F j, Y" }}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background: 
+                            {% if order.status == 'pending' %}#ffc107{% endif %}
+                            {% if order.status == 'processing' %}#17a2b8{% endif %}
+                            {% if order.status == 'shipped' %}#007bff{% endif %}
+                            {% if order.status == 'delivered' %}#28a745{% endif %}
+                            {% if order.status == 'cancelled' %}#dc3545{% endif %}
+                            ; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                            {{ order.get_status_display }}
+                        </span>
+                        <p style="margin: 5px 0; font-weight: bold; color: #d86f2a;">Naira {{ order.total_amount }}</p>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <p style="margin: 0; color: #666;">
+                        {{ order.get_total_items }} items • 
+                        {{ order.first_name }} {{ order.last_name }}
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="{% url 'order_detail' order.id %}" style="color: #d86f2a; text-decoration: none; font-weight: bold;">View Details →</a>
+                        
+                        {% if order.status == 'pending' or order.status == 'processing' %}
+                            <a href="{% url 'cancel_order' order.id %}" 
+                               style="color: white; background: #dc3545; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;"
+                               onclick="return confirm('Are you sure you want to cancel this order?')">
+                                Cancel Order
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 50px 0;">
+        <p style="font-size: 1.2rem;">You haven't placed any orders yet.</p>
+        <a href="{% url 'product_list' %}" class="button" style="display: inline-block; margin-top: 1rem; background: #d86f2a; color: white; padding: 12px 30px; border-radius: 999px; text-decoration: none; font-weight: bold;">Start Shopping</a>
+    </div>
+{% endif %}
+{% endblock %}
