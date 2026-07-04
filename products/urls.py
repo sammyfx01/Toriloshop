@@ -5,6 +5,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('products/', views.product_list, name='product_list'),
     path('products/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('category/<slug:slug>/', views.category_products, name='category_products'),
     path('cart/', views.cart_detail, name='cart_detail'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/update/<int:product_id>/', views.update_cart, name='update_cart'),
@@ -18,5 +19,4 @@ urlpatterns = [
     path('orders/', views.order_history, name='order_history'),
     path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
     path('order/cancel/<int:order_id>/', views.cancel_order, name='cancel_order'),
-    path('create-admin/', views.create_admin, name='create_admin'),
 ]

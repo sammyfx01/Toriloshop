@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Product, Order, OrderItem, Coupon, UsedCoupon
+from .models import Product, Order, OrderItem, Coupon, UsedCoupon, Category
 from .cart import Cart
 from decimal import Decimal
 from django.utils import timezone
@@ -9,8 +9,8 @@ from django.utils import timezone
 # ===== HOME VIEW =====
 def home(request):
     products = Product.objects.all()[:8]
+    categories = Category.objects.all()
     
-    # Get active coupons for homepage
     now = timezone.now()
     active_coupons = Coupon.objects.filter(
         active=True,
@@ -20,24 +20,48 @@ def home(request):
     
     return render(request, 'products/home.html', {
         'products': products,
-        'active_coupons': active_coupons
+        'active_coupons': active_coupons,
+        'categories': categories,
     })
 
 # ===== PRODUCT VIEWS =====
 def product_list(request):
     products = Product.objects.all()
-    return render(request, 'products/product_list.html', {'products': products})
+    categories = Category.objects.all()
+    category_id = request.GET.get('category')
+    
+    if category_id:
+        products = products.filter(category_id=category_id)
+    
+    return render(request, 'products/product_list.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category': category_id,
+    })
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    categories = Category.objects.all()
+    return render(request, 'products/product_detail.html', {
+        'product': product,
+        'categories': categories,
+    })
+
+def category_products(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category)
+    categories = Category.objects.all()
+    return render(request, 'products/category_products.html', {
+        'category': category,
+        'products': products,
+        'categories': categories,
+    })
 
 # ===== CART VIEWS =====
 def cart_detail(request):
     cart = Cart(request)
     cart_data = cart.get_items(Product)
     
-    # Get active coupons
     now = timezone.now()
     available_coupons = Coupon.objects.filter(
         active=True,
@@ -92,7 +116,6 @@ def clear_cart(request):
 # ===== COUPON VIEWS =====
 @login_required
 def apply_coupon(request):
-    """Apply a coupon to the cart"""
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code', '').strip().upper()
         cart = Cart(request)
@@ -110,7 +133,6 @@ def apply_coupon(request):
 
 @login_required
 def remove_coupon(request):
-    """Remove coupon from cart"""
     if 'coupon_code' in request.session:
         del request.session['coupon_code']
     if 'coupon_discount' in request.session:
@@ -120,7 +142,6 @@ def remove_coupon(request):
 
 @login_required
 def coupons_page(request):
-    """Display all active coupons"""
     now = timezone.now()
     active_coupons = Coupon.objects.filter(
         active=True,
@@ -146,7 +167,6 @@ def checkout(request):
         messages.warning(request, 'Your cart is empty!')
         return redirect('product_list')
     
-    # Apply coupon discount if present
     discount = Decimal('0.00')
     coupon_code = None
     if 'coupon_discount' in request.session:
@@ -156,7 +176,6 @@ def checkout(request):
     final_total = cart_data['total'] - discount
     
     if request.method == 'POST':
-        # Get form data
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -166,7 +185,6 @@ def checkout(request):
         state = request.POST.get('state')
         country = request.POST.get('country', 'Nigeria')
         
-        # Create order
         order = Order.objects.create(
             user=request.user if request.user.is_authenticated else None,
             first_name=first_name,
@@ -180,7 +198,6 @@ def checkout(request):
             total_amount=final_total
         )
         
-        # Create order items
         for item in cart_data['items']:
             OrderItem.objects.create(
                 order=order,
@@ -189,7 +206,6 @@ def checkout(request):
                 price=item['product'].price
             )
         
-        # Save coupon usage if applied
         if 'coupon_code' in request.session:
             try:
                 coupon = Coupon.objects.get(code=request.session['coupon_code'])
@@ -203,7 +219,6 @@ def checkout(request):
             except Coupon.DoesNotExist:
                 pass
         
-        # Clear the cart and session
         cart.clear()
         if 'coupon_code' in request.session:
             del request.session['coupon_code']
@@ -238,7 +253,6 @@ def order_detail(request, order_id):
 
 @login_required
 def cancel_order(request, order_id):
-    """Cancel an order"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
     if order.status in ['pending', 'processing']:
@@ -249,24 +263,3 @@ def cancel_order(request, order_id):
         messages.error(request, 'This order cannot be cancelled.')
     
     return redirect('order_history')
-
-def home(request):
-    from django.http import HttpResponse
-    return HttpResponse("<h1>Toriloshop is Live! 🎉</h1><p>Your site is working on Render!</p>")
-
-    from django.contrib.auth.models import User
-from django.http import HttpResponse
-
-def create_admin(request):
-    try:
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser(
-                username='admin',
-                email='admin@example.com',
-                password='admin123'
-            )
-            return HttpResponse("✅ Admin user created!<br>Username: admin<br>Password: admin123")
-        else:
-            return HttpResponse("✅ Admin user already exists!")
-    except Exception as e:
-        return HttpResponse(f"❌ Error: {e}")
