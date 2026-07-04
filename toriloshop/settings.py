@@ -1,3 +1,10 @@
+import os
+import dj_database_url
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 """
 Django settings for toriloshop project.
 
@@ -25,7 +32,7 @@ SECRET_KEY = 'django-insecure-cabpk7a517=e5hjr+c-kc^mz536e49)cf_kf1qf*w_cy)de%3p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'toriloshop.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -49,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'toriloshop.urls'
@@ -77,12 +85,14 @@ WSGI_APPLICATION = 'toriloshop.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
+
 
 
 # Password validation
@@ -144,3 +154,7 @@ EMAIL_HOST_USER = 'iretiayomideajanaku01@gmail.com'
 EMAIL_HOST_PASSWORD = 'aiyrcsnvduplyofd'
 DEFAULT_FROM_EMAIL = 'iretiayomideajanaku01@gmail.com'
 EMAIL_TIMEOUT = 30 
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
