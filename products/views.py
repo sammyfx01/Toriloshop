@@ -249,3 +249,7 @@ def cancel_order(request, order_id):
         messages.error(request, 'This order cannot be cancelled.')
     
     return redirect('order_history')
+
+def home(request):
+    from django.http import HttpResponse
+    return HttpResponse("<h1>Toriloshop is Live! 🎉</h1><p>Your site is working on Render!</p>")
