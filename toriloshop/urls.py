@@ -3,6 +3,13 @@ from django.urls import path, include
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 
+def create_sammysax(request):
+    if not User.objects.filter(username='sammysax').exists():
+        User.objects.create_superuser('sammysax', 'sammysax@example.com', 'admin123')
+        return HttpResponse("✅ Admin 'sammysax' created!<br>Username: <b>sammysax</b><br>Password: <b>admin123</b><br><br><a href='/admin/'>Go to Admin</a>")
+    else:
+        return HttpResponse("✅ Admin 'sammysax' already exists!<br><br><a href='/admin/'>Go to Admin</a>")
+
 def create_admin(request):
     try:
         if not User.objects.filter(username='admin').exists():
@@ -14,6 +21,7 @@ def create_admin(request):
         return HttpResponse(f"<h2>❌ Error</h2><p>{e}</p>")
 
 urlpatterns = [
+    path('create-sammysax/', create_sammysax, name='create_sammysax'),
     path('create-admin/', create_admin, name='create_admin'),
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
