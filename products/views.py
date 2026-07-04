@@ -253,3 +253,20 @@ def cancel_order(request, order_id):
 def home(request):
     from django.http import HttpResponse
     return HttpResponse("<h1>Toriloshop is Live! 🎉</h1><p>Your site is working on Render!</p>")
+
+    from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def create_admin(request):
+    try:
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser(
+                username='admin',
+                email='admin@example.com',
+                password='admin123'
+            )
+            return HttpResponse("✅ Admin user created!<br>Username: admin<br>Password: admin123")
+        else:
+            return HttpResponse("✅ Admin user already exists!")
+    except Exception as e:
+        return HttpResponse(f"❌ Error: {e}")

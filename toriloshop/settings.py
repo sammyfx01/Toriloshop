@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-cabpk7a517=e5hjr+c-kc^mz536e49)cf_kf1qf*w_cy)de%3p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'toriloshop.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*', 'toriloshop-store.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
