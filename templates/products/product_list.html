@@ -48,7 +48,7 @@
             {% for product in products %}
                 <article class="card" style="background: white; border: 1px solid rgba(110, 74, 46, 0.12); border-radius: 1.25rem; padding: 1.25rem;">
                     <div class="product-thumb">
-                        <img src="{% if product.image %}{{ product.image.url }}{% else %}https://via.placeholder.com/300x300?text={{ product.name }}{% endif %}" alt="{{ product.name }}" class="product-image">
+                     <img src="{% if product.image %}{{ product.image.url }}{% else %}https://via.placeholder.com/300x300?text=Product{% endif %}" alt="{{ product.name }}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300?text=Product'">
                     </div>
                     <h2 style="color: #20160f;">{{ product.name }}</h2>
                     <p class="price" style="color: #d86f2a;">Naira {{ product.price }}</p>

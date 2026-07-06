@@ -57,7 +57,7 @@
         <div style="background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s; text-align: center; border: 1px solid rgba(110, 74, 46, 0.12);">
             {% if product.image %}
                 <div style="height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; overflow: hidden; border-radius: 10px;">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                 <img src="{% if product.image %}{{ product.image.url }}{% else %}https://via.placeholder.com/300x300?text=Product{% endif %}" alt="{{ product.name }}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300?text=Product'">
                 </div>
             {% else %}
                 <div style="height: 200px; background: #f0f0f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; color: #999;">
