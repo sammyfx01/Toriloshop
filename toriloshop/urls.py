@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from products.models import Product
 from django.shortcuts import render
+from django.conf import settings
+from django.conf.urls.static import static
 
 def homepage(request):
     products = Product.objects.all()
@@ -22,3 +24,7 @@ urlpatterns = [
     path('', include('products.urls')),
     path('', include('users.urls')),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

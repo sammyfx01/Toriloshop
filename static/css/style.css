@@ -409,3 +409,220 @@ h1 {
     background: #20160f !important;
     color: #fff7ef !important;
 }
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets and smaller laptops */
+@media screen and (max-width: 1024px) {
+    .page-shell {
+        width: 95%;
+        padding: 1rem 0 2rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .product-thumb {
+        height: 150px;
+    }
+}
+
+/* Tablets and large phones */
+@media screen and (max-width: 768px) {
+    /* Navbar */
+    .site-header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+    
+    .site-nav {
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .site-nav a {
+        font-size: 14px;
+        padding: 0.5rem 0.8rem;
+    }
+    
+    /* Hero */
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero .lead {
+        font-size: 0.95rem;
+    }
+    
+    /* Products */
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0.8rem;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+    
+    .product-thumb {
+        height: 120px;
+    }
+    
+    .product-image {
+        height: 120px;
+    }
+    
+    /* Checkout page */
+    .checkout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Cart page */
+    .cart-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .cart-item img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    /* Forms */
+    .search-input {
+        min-width: 150px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+        font-size: 16px !important; /* Prevents zoom on mobile */
+        padding: 8px !important;
+    }
+    
+    /* Coupons */
+    .coupon-container {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+    
+    .coupon-container input {
+        width: 100% !important;
+    }
+    
+    /* Messages */
+    .alert-message {
+        width: 90% !important;
+        right: 5% !important;
+        font-size: 14px;
+    }
+}
+
+/* Small phones */
+@media screen and (max-width: 480px) {
+    .brand {
+        font-size: 1.2rem;
+    }
+    
+    .site-nav {
+        gap: 0.3rem;
+    }
+    
+    .site-nav a {
+        font-size: 12px;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero .lead {
+        font-size: 0.85rem;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+    
+    .card {
+        padding: 0.8rem;
+    }
+    
+    .card h2, .card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .price {
+        font-size: 0.9rem;
+    }
+    
+    .product-thumb {
+        height: 100px;
+    }
+    
+    .product-image {
+        height: 100px;
+    }
+    
+    .button, .btn-primary, .btn-secondary {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    .page-shell {
+        width: 98%;
+        padding: 0.5rem 0 1.5rem;
+    }
+    
+    /* Cart */
+    .cart-item {
+        padding: 10px !important;
+    }
+    
+    .cart-item h3 {
+        font-size: 14px;
+    }
+    
+    .item-quantity input {
+        width: 40px !important;
+    }
+    
+    /* Checkout form */
+    .checkout-form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Footer */
+    .site-footer {
+        font-size: 12px;
+        padding: 1rem;
+    }
+}
+
+/* Very small phones */
+@media screen and (max-width: 360px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .site-nav a {
+        font-size: 11px;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.2rem;
+    }
+}
