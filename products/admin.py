@@ -26,3 +26,10 @@ class CouponAdmin(admin.ModelAdmin):
 @admin.register(UsedCoupon)
 class UsedCouponAdmin(admin.ModelAdmin):
     list_display = ['user', 'coupon', 'order', 'used_at']
+
+    @admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price', 'stock', 'category']
+    list_filter = ['category']
+    search_fields = ['name']
+    fields = ['name', 'description', 'price', 'image', 'image_url', 'stock', 'category']  # ← ADD image_url
