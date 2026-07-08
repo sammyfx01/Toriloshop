@@ -8,7 +8,7 @@ from django.utils import timezone
 
 # ===== HOME VIEW =====
 def home(request):
-    products = Product.objects.all()
+    products = Product.objects.all()[:8]
     categories = Category.objects.all()
     
     now = timezone.now()
@@ -28,15 +28,22 @@ def home(request):
 def product_list(request):
     products = Product.objects.all()
     categories = Category.objects.all()
-    category_id = request.GET.get('category')
     
+    # Category filter
+    category_id = request.GET.get('category')
     if category_id:
         products = products.filter(category_id=category_id)
+    
+    # Search query
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(name__icontains=query)
     
     return render(request, 'products/product_list.html', {
         'products': products,
         'categories': categories,
         'selected_category': category_id,
+        'query': query,
     })
 
 def product_detail(request, product_id):
