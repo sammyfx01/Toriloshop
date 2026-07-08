@@ -1,16 +1,18 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from products.models import Product
 from django.shortcuts import render
-from django.conf import settings
-from django.conf.urls.static import static
 
+# Homepage
 def homepage(request):
     products = Product.objects.all()
-    return render(request, 'products/product_list.html', {'products': products})
+    return render(request, 'products/home.html', {'products': products})
 
+# Create Admin
 def create_admin(request):
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
