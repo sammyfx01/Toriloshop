@@ -10,15 +10,100 @@
         {% endblock %}
     </title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: #fff7ef;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Navigation links container */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                gap: 8px;
+                padding: 15px 0;
+                background: #20160f;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .nav-links a,
+            .nav-links .dropdown-container {
+                width: 100%;
+                text-align: center;
+            }
+            .nav-links .dropdown-menu {
+                position: static !important;
+                box-shadow: none !important;
+                background: #2a1f17 !important;
+                width: 100% !important;
+            }
+            .nav-links .dropdown-menu a {
+                color: #fff7ef !important;
+                padding: 8px !important;
+            }
+            .site-header {
+                flex-wrap: wrap;
+            }
+            .brand {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <header class="site-header" style="background: #20160f; color: #fff7ef; padding: 1.25rem 1.5rem; position: sticky; top: 0; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+    <header class="site-header" style="background: #20160f; color: #fff7ef; padding: 1.25rem 1.5rem; position: sticky; top: 0; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
         <div class="brand">
             <a href="{% url 'home' %}" style="color: #fff7ef; text-decoration: none; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Toriloshop</a>
         </div>
-        
-        <nav style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+
+        <!-- Hamburger button -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Navigation links -->
+        <nav class="nav-links" id="navLinks">
             <a href="{% url 'home' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">Home</a>
             <a href="{% url 'product_list' %}" style="color: #fff7ef; text-decoration: none; padding: 5px 5px;">Products</a>
             
@@ -35,7 +120,6 @@
                 {% endif %}
             </a>
             
-            <!-- WhatsApp -->
             <a href="https://wa.me/2348000000000?text=Hello%20Toriloshop!%20I%20need%20help%20with%20my%20order."
                target="_blank"
                style="background: #25D366; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none; font-size: 14px;">
@@ -44,7 +128,7 @@
             
             <!-- User Dropdown -->
             {% if user.is_authenticated %}
-                <div style="position: relative; display: inline-block;">
+                <div class="dropdown-container" style="position: relative; display: inline-block;">
                     <div onclick="toggleDropdown()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15);">
                         <span style="background: #d86f2a; color: white; border-radius: 50%; padding: 3px 9px; font-size: 12px; font-weight: bold;">
                             {{ user.username|first|upper }}
@@ -52,32 +136,13 @@
                         <span style="font-size: 13px; color: #fff7ef;">{{ user.username }}</span>
                         <span style="font-size: 10px; color: rgba(255,255,255,0.6);">▼</span>
                     </div>
-                    <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 40px; background: white; min-width: 160px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); padding: 5px 0; z-index: 1000;">
-                        <a href="{% url 'order_history' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px; transition: background 0.2s;">📦 My Orders</a>
-                        <a href="{% url 'coupons' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px; transition: background 0.2s;">🎫 Coupons</a>
+                    <div id="userDropdown" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 40px; background: white; min-width: 160px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); padding: 5px 0; z-index: 1000;">
+                        <a href="{% url 'order_history' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px;">📦 My Orders</a>
+                        <a href="{% url 'coupons' %}" style="display: block; padding: 10px 18px; color: #333; text-decoration: none; font-size: 14px;">🎫 Coupons</a>
                         <hr style="margin: 5px 0; border: none; border-top: 1px solid #eee;">
-                        <a href="{% url 'users:logout' %}" style="display: block; padding: 10px 18px; color: #dc3545; text-decoration: none; font-size: 14px; font-weight: bold; transition: background 0.2s;">🚪 Logout</a>
+                        <a href="{% url 'users:logout' %}" style="display: block; padding: 10px 18px; color: #dc3545; text-decoration: none; font-size: 14px; font-weight: bold;">🚪 Logout</a>
                     </div>
                 </div>
-                
-                <script>
-                function toggleDropdown() {
-                    var dropdown = document.getElementById('userDropdown');
-                    if (dropdown.style.display === 'block') {
-                        dropdown.style.display = 'none';
-                    } else {
-                        dropdown.style.display = 'block';
-                    }
-                }
-                
-                document.addEventListener('click', function(event) {
-                    var dropdown = document.getElementById('userDropdown');
-                    var trigger = document.querySelector('[onclick="toggleDropdown()"]');
-                    if (dropdown && trigger && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
-                        dropdown.style.display = 'none';
-                    }
-                });
-                </script>
             {% else %}
                 <a href="{% url 'users:login' %}" style="background: #007bff; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none;">Login</a>
                 <a href="{% url 'users:register' %}" style="background: #28a745; padding: 5px 15px; border-radius: 20px; color: white; text-decoration: none;">Register</a>
@@ -127,6 +192,42 @@
     <footer class="site-footer" style="background: #20160f; color: #fff7ef; padding: 1.5rem; text-align: center; margin-top: 4rem;">
         <p>Toriloshop &copy; 2026</p>
     </footer>
-    
+
+    <!-- ===== HAMBURGER SCRIPT ===== -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu when any link is clicked
+        document.querySelectorAll('#navLinks a').forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Keep existing toggleDropdown function
+        function toggleDropdown() {
+            var dropdown = document.getElementById('userDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            } else {
+                dropdown.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            var dropdown = document.getElementById('userDropdown');
+            var trigger = document.querySelector('[onclick="toggleDropdown()"]');
+            if (dropdown && trigger && !dropdown.contains(event.target) && !trigger.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
